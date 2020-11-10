@@ -18,48 +18,100 @@ public class Event extends NodeMultiple {
 	public static final String PROMPT_ANSWER = "Answer: ";
 	public static final String WARNING_MSG_INTEGER_EXPECTED = "Please input a integer within range!";
 
+	protected GUIManager gui;
+	protected int playerAnswer;
+	protected int id;
+	protected Event[] daughters;
+	protected String data;
+	protected int pathAnswer;
 
+	static int lastId = 0;
+
+
+	public Event(GUIManager gui, String data) {
+		this.gui = gui;
+		this.data = data;
+
+		this.id = lastId + 1;
+		lastId = lastId + 1;
+	}
 
 	/**
 	 * @return the playerAnswer
 	 */
-	public String getPlayerAnswer() {
-		/* TO BE COMPLETED */
+	public int getPlayerAnswer() {
+		int playerAnswerV;
+		while(true) {
+			playerAnswerV = this.gui.getInputReader().nextInt();
+			if (this.isInRange(playerAnswerV-1)) {
+				this.gui.output(WARNING_MSG_INTEGER_EXPECTED);
+				continue;
+			}
+			break;
+		}
+		return playerAnswerV;
 	}
+
+
+
+	public boolean isFinal() {
+		if (this.daughters.length == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isInRange(int index) {
+		if (index >= 0 && index < this.daughters.length) {
+			return true;
+		}
+		return false;
+	}
+
+
+	public int interpretAnswer() {
+		if (this.daughters[this.playerAnswer-1] ==  null) {
+			this.gui.outputErr(ERROR_MSG_UNEXPECTED_END);
+		}
+
+		this.pathAnswer = this.playerAnswer - 1;
+		return this.pathAnswer;
+	}
+
 
 	/**
 	 * @param playerAnswer the playerAnswer to set
 	 */
-	public void setPlayerAnswer(String playerAnswer) {
-		/* TO BE COMPLETED */
+	public void setPlayerAnswer(int playerAnswer) {
+		this.playerAnswer = playerAnswer;
 	}
 
 	/**
 	 * @return the reader
 	 */
 	public Scanner getReader() {
-		/* TO BE COMPLETED */
+		return this.gui.getInputReader();
 	}
 
 	/**
 	 * @param reader the reader to set
 	 */
 	public void setReader(Scanner reader) {
-		/* TO BE COMPLETED */
+		this.gui.setInputReader(reader);
 	}
 
 	/**
 	 * @return the chosenPath
 	 */
 	public int getChosenPath() {
-		/* TO BE COMPLETED */
+		return this.pathAnswer;
 	}
 
 	/**
 	 * @param chosenPath the chosenPath to set
 	 */
 	public void setChosenPath(int chosenPath) {
-		/* TO BE COMPLETED */
+		this.pathAnswer = pathAnswer;
 	}
 
 	/* Methods */
@@ -67,7 +119,7 @@ public class Event extends NodeMultiple {
 	 * @see pracHDVELH.NodeMultiple#getData()
 	 */
 	public String getData() {
-		/* TO BE COMPLETED */
+		return this.data;
 	}
 
 	/**
@@ -75,7 +127,7 @@ public class Event extends NodeMultiple {
 	 * @param data
 	 */
 	public void setData(String data) {
-		/* TO BE COMPLETED */
+		this.data = data;
 	}
 
 	/**
@@ -83,7 +135,7 @@ public class Event extends NodeMultiple {
 	 */
 	@Override
 	public Event getDaughter(int i) {
-		/* TO BE COMPLETED */
+		return this.daughters[i];
 	}
 
 	/**
@@ -92,32 +144,34 @@ public class Event extends NodeMultiple {
 	 * @param i
 	 */
 	public void setDaughter(Event daughter, int i) {
-		/* TO BE COMPLETED */
+		this.daughters[i] = daughter;
 	}
 
 	/**
 	 * @return the gui
 	 */
 	public GUIManager getGui() {
-		/* TO BE COMPLETED */
+		return this.gui;
 	}
 
 	/**
 	 * @param gui the gui to set
 	 */
 	public void setGui(GUIManager gui) {
-		/* TO BE COMPLETED */
+		this.gui = gui;
 	}
 
 	/**
 	 * @return the id
 	 */
 	public int getId() {
-		/* TO BE COMPLETED */
+		return this.id;
 	}
 
-	/* Methods */
-	/* TO BE COMPLETED */
+	public void setId() {
+		this.id = id;
+	}
+
 
 }
 

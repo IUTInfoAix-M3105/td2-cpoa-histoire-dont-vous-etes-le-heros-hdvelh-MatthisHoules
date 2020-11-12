@@ -5,6 +5,7 @@
  */
 package pracHDVELH;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import myUtils.ErrorNaiveHandler;
@@ -21,7 +22,7 @@ public class Event extends NodeMultiple {
 	protected GUIManager gui;
 	protected int playerAnswer;
 	protected int id;
-	protected Event[] daughters;
+	protected ArrayList<Event> daughters;
 	protected String data;
 	protected int pathAnswer;
 
@@ -31,6 +32,7 @@ public class Event extends NodeMultiple {
 	public Event(GUIManager gui, String data) {
 		this.gui = gui;
 		this.data = data;
+		this.daughters = new ArrayList<>();
 
 		this.id = lastId + 1;
 		lastId = lastId + 1;
@@ -42,27 +44,28 @@ public class Event extends NodeMultiple {
 	public int getPlayerAnswer() {
 		int playerAnswerV;
 		while(true) {
-			playerAnswerV = this.gui.getInputReader().nextInt();
-			if (this.isInRange(playerAnswerV-1)) {
+			playerAnswerV = this.getReader().nextInt();
+			if (!this.isInRange(playerAnswerV-1)) {
 				this.gui.output(WARNING_MSG_INTEGER_EXPECTED);
 				continue;
 			}
 			break;
 		}
-		return playerAnswerV;
+		this.playerAnswer = playerAnswerV;
+		return this.interpretAnswer();
 	}
 
 
 
 	public boolean isFinal() {
-		if (this.daughters.length == 0) {
+		if (this.daughters.size() == 0) {
 			return true;
 		}
 		return false;
 	}
 
 	public boolean isInRange(int index) {
-		if (index >= 0 && index < this.daughters.length) {
+		if (index >= 0 && index < this.daughters.size()) {
 			return true;
 		}
 		return false;
@@ -70,11 +73,11 @@ public class Event extends NodeMultiple {
 
 
 	public int interpretAnswer() {
-		if (this.daughters[this.playerAnswer-1] ==  null) {
+		if (this.daughters.get(this.playerAnswer-1) ==  null) {
 			this.gui.outputErr(ERROR_MSG_UNEXPECTED_END);
 		}
 
-		this.pathAnswer = this.playerAnswer - 1;
+		this.pathAnswer = this.playerAnswer-1;
 		return this.pathAnswer;
 	}
 
@@ -135,7 +138,7 @@ public class Event extends NodeMultiple {
 	 */
 	@Override
 	public Event getDaughter(int i) {
-		return this.daughters[i];
+		return this.daughters.get(i);
 	}
 
 	/**
@@ -144,7 +147,12 @@ public class Event extends NodeMultiple {
 	 * @param i
 	 */
 	public void setDaughter(Event daughter, int i) {
-		this.daughters[i] = daughter;
+		this.daughters.set(i, daughter);
+	}
+
+
+	public void addDaughter(Event daughter) {
+		this.daughters.add(daughter);
 	}
 
 	/**
@@ -172,6 +180,16 @@ public class Event extends NodeMultiple {
 		this.id = id;
 	}
 
+
+	public Event run() {
+		this.gui.outputln(this.getData());
+		this.gui.outputln(this.PROMPT_ANSWER);
+
+		// on récupère le choix
+		int userChoice = this.getPlayerAnswer();
+		
+		return this.getDaughter(userChoice);
+	}
 
 }
 

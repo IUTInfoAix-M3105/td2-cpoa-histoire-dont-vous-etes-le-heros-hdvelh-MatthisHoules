@@ -17,9 +17,31 @@ public class Scenario {
 
 	/* TO BE COMPLETED */
 
+	public Event getHead() {
+		return this.head;
+	}
+
+	public Scenario (GUIManager gui, Event headEvent) {
+		this.gui = gui;
+		this.head = headEvent;
+	}
+
+
+	public String run() {
+		if (this.getHead() == null) {
+			this.gui.outputErr(this.MSG_EMPTY_SCENARIO);
+		}
+
+		Event currentEvent = this.getHead();
+		while(!currentEvent.isFinal()) {
+			currentEvent = currentEvent.run();
+		}
+
+		return this.MSG_FINALE;
+	}
+
 	/* MAIN */
 	public static void main(String[] args) {
-		Scenario scenario;
 		GUIManager gui = new GUIManager(System.in, System.out, System.err);
 
 		// S
@@ -39,12 +61,13 @@ public class Scenario {
 		Event event2 = new Event(gui, "event2:\n" + "(1)2.1 (2)2.2");
 		Event endEvent = new Event(gui, "End event: that's it :-)");
 		startEvent.addDaughter(event1);
-		startEvent.setDaughter(event2, 1);
+		startEvent.addDaughter(event2);
 		event1.addDaughter(startEvent);
 		event1.addDaughter(endEvent);
 		event2.addDaughter(event1);
 		event2.addDaughter(startEvent);
-		scenario = new Scenario(gui, startEvent);
+		Scenario scenario = new Scenario(gui, startEvent);
+		scenario.gui.outputln(scenario.run());
 
 		// *2
 		// ...
@@ -52,11 +75,11 @@ public class Scenario {
 		// ***E
 		// ***event3
 
-		Event event3 = new EventExactSolution(gui, "Wizard: how much is worth pi?", "3.14159");
+		/*Event event3 = new EventExactSolution(gui, "Wizard: how much is worth pi?", "3.14159");
 		event2.setData(event2.getData() + " (3)2.3");
 		event2.addDaughter(event3);
 		event3.addDaughter(endEvent);
-		event3.addDaughter(event3);
+		event3.addDaughter(event3); */
 
 		/* ******* */
 		// **2.3
@@ -66,7 +89,7 @@ public class Scenario {
 		// ****event3
 		// ...
 
-		int[] mask = { 3, 6, 7 };
+		/*int[] mask = { 3, 6, 7 };
 		Event event4 = new EventRandomSolution(gui, "Random choice of the next event...", mask, "Dice rolling... Roll=",
 				"\nNext event is ");
 		event3.setDaughter(event4, 0);
@@ -74,7 +97,7 @@ public class Scenario {
 		event4.addDaughter(endEvent);
 		event4.addDaughter(event3);
 
-		System.out.println(scenario.run());
+		System.out.println(scenario.run()); */
 	}
 }
 

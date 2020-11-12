@@ -80,8 +80,7 @@ public class NodeMultiple {
 	 * @param daughter
 	 */
 	public void addDaughter(NodeMultiple daughter) {
-		if (this.daughters.length >= NODE_MAX_ARITY) return;
-		daughters[this.daughters.length] = daughter;
+		return;
 	}
 
 	/**

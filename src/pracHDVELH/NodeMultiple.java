@@ -115,8 +115,12 @@ public class NodeMultiple {
 	 *         daughter node.
 	 */
 	public boolean hasDaughters() {
-		if (this.daughters.length == 0) return false;
-		return true;
+		int i = 0;
+		while (i < daughters.length) {
+			if (daughters[i] != null) return true;
+			i = i+1;
+		}
+		return false;
 	}
 
 	/* Constructors */

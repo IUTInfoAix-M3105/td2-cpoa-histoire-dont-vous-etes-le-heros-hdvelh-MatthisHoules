@@ -75,8 +75,9 @@ public class Scenario {
 		// ***E
 		// ***event3
 
-		/*Event event3 = new EventExactSolution(gui, "Wizard: how much is worth pi?", "3.14159");
-		event2.setData(event2.getData() + " (3)2.3");
+		Event event3 = new EventExactSolution(gui, "Wizard: how much is worth pi?", "3.14159");
+
+		/*event2.setData(event2.getData() + " (3)2.3");
 		event2.addDaughter(event3);
 		event3.addDaughter(endEvent);
 		event3.addDaughter(event3); */

@@ -7,6 +7,9 @@ package pracHDVELH;
 
 import myUtils.ErrorNaiveHandler;
 
+import javax.xml.soap.Node;
+import java.util.ArrayList;
+
 /**
  * @author prost
  *
@@ -53,6 +56,7 @@ public class NodeMultiple {
 	 * @param i        the daughter node's index
 	 */
 	public void setDaughter(NodeMultiple daughter, int i) {
+		if (i<0 || i>=NODE_MAX_ARITY) return;
 		this.daughters[i] = daughter;
 	}
 
@@ -80,6 +84,15 @@ public class NodeMultiple {
 	 * @param daughter
 	 */
 	public void addDaughter(NodeMultiple daughter) {
+		if (daughter == null) return;
+		int i = 0;
+		while (i < daughters.length) {
+			if (daughters[i] == null) {
+				daughters[i] = daughter;
+				return;
+			}
+			i = i+1;
+		}
 		return;
 	}
 
@@ -111,8 +124,7 @@ public class NodeMultiple {
 	 * Default constructor.
 	 */
 	public NodeMultiple() {
-		this.data = null;
-		this.daughters = null;
+		this.daughters = new NodeMultiple[NODE_MAX_ARITY];
 	}
 
 	/**

@@ -33,15 +33,14 @@ public class Scenario {
 		}
 
 		Event currentEvent = this.getHead();
-		while(!currentEvent.isFinal()) {
-			currentEvent = currentEvent.run();
-		}
+		while(!currentEvent.isFinal()) currentEvent = currentEvent.run();
 
 		return this.MSG_FINALE;
 	}
 
 	/* MAIN */
 	public static void main(String[] args) {
+		Scenario scenario;
 		GUIManager gui = new GUIManager(System.in, System.out, System.err);
 
 		// S
@@ -56,17 +55,18 @@ public class Scenario {
 		// **2.2
 		// ***S
 
+
 		Event startEvent = new Event(gui, "Go!\n" + "(1)1 (2)2");
 		Event event1 = new Event(gui, "event1:\n" + "(1)1.1 (2)1.2");
 		Event event2 = new Event(gui, "event2:\n" + "(1)2.1 (2)2.2");
 		Event endEvent = new Event(gui, "End event: that's it :-)");
 		startEvent.addDaughter(event1);
-		startEvent.addDaughter(event2);
+		startEvent.setDaughter(event2, 1);
 		event1.addDaughter(startEvent);
 		event1.addDaughter(endEvent);
 		event2.addDaughter(event1);
 		event2.addDaughter(startEvent);
-		Scenario scenario = new Scenario(gui, startEvent);
+		scenario = new Scenario(gui, startEvent);
 		scenario.gui.outputln(scenario.run());
 
 		// *2

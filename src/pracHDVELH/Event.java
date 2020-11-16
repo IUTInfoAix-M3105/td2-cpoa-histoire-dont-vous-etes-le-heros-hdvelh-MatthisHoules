@@ -22,17 +22,21 @@ public class Event extends NodeMultiple {
 	protected GUIManager gui;
 	protected int playerAnswer;
 	protected int id;
-	protected ArrayList<Event> daughters;
+	protected Event[] daughters;
 	protected String data;
 	protected int pathAnswer;
 
 	static int lastId = 0;
 
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 
 	public Event(GUIManager gui, String data) {
 		this.gui = gui;
 		this.data = data;
-		this.daughters = new ArrayList<>();
+		this.daughters = new Event[NODE_MAX_ARITY];
 
 		this.id = lastId + 1;
 		lastId = lastId + 1;
@@ -58,14 +62,21 @@ public class Event extends NodeMultiple {
 
 
 	public boolean isFinal() {
-		if (this.daughters.size() == 0) {
-			return true;
+		// un evenement final ne possède pas de fille (renvoie vraie quand has daughters est false)
+		return !this.hasDaughters();
+	}
+
+	public boolean hasDaughters() {
+		int i = 0;
+		while (i < daughters.length) {
+			if (daughters[i] != null) return true;
+			i = i+1;
 		}
 		return false;
 	}
 
 	public boolean isInRange(int index) {
-		if (index >= 0 && index < this.daughters.size()) {
+		if (index >= 0 && index < this.daughters.length) {
 			return true;
 		}
 		return false;
@@ -73,7 +84,7 @@ public class Event extends NodeMultiple {
 
 
 	public int interpretAnswer() {
-		if (this.daughters.get(this.playerAnswer-1) ==  null) {
+		if (this.daughters[this.playerAnswer-1] ==  null) {
 			this.gui.outputErr(ERROR_MSG_UNEXPECTED_END);
 		}
 
@@ -138,7 +149,10 @@ public class Event extends NodeMultiple {
 	 */
 	@Override
 	public Event getDaughter(int i) {
-		return this.daughters.get(i);
+		if (i<0 || i >= NODE_MAX_ARITY) {
+			ErrorNaiveHandler.abort(ERROR_MSG_INDEX_OUT_OF_RANGE+'@'+getClass()+".getDaughter()");
+		}
+		return this.daughters[i];
 	}
 
 	/**
@@ -147,12 +161,22 @@ public class Event extends NodeMultiple {
 	 * @param i
 	 */
 	public void setDaughter(Event daughter, int i) {
-		this.daughters.set(i, daughter);
+		if (i < 0 || i >= NODE_MAX_ARITY) {
+			ErrorNaiveHandler.abort(ERROR_MSG_INDEX_OUT_OF_RANGE+'@'+getClass()+".getDaughter()");
+		}
+		this.daughters[i] = daughter;
 	}
 
 
 	public void addDaughter(Event daughter) {
-		this.daughters.add(daughter);
+		if (daughter == null) return;
+		int i = 0;
+		while (i < daughters.length && daughters[i] != null) {
+			i = i+1;
+		}
+		if (i != daughters.length) {
+			daughters[i] = daughter;
+		}
 	}
 
 	/**
@@ -187,7 +211,7 @@ public class Event extends NodeMultiple {
 
 		// on récupère le choix
 		int userChoice = this.getPlayerAnswer();
-		
+
 		return this.getDaughter(userChoice);
 	}
 

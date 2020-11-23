@@ -56,13 +56,16 @@ public class Event extends NodeMultiple {
 	public int interpretAnswer() {
 		int playerAnswerInt;
 		this.gui.outputln(this.PROMPT_ANSWER);
-		while(true) {
-			playerAnswerInt = Integer.parseInt(this.getPlayerAnswer());
-			if (this.isInRange(playerAnswerInt-1)) {
-				break;
-			}
+
+		playerAnswerInt = Integer.parseInt(this.getPlayerAnswer());
+
+
+		while(!this.isInRange(playerAnswerInt-1)) {
 			this.gui.output(WARNING_MSG_INTEGER_EXPECTED);
 			this.gui.outputln(this.PROMPT_ANSWER);
+
+			playerAnswerInt = Integer.parseInt(this.getPlayerAnswer());
+
 		}
 
 		this.pathAnswer = playerAnswerInt-1;
@@ -86,7 +89,7 @@ public class Event extends NodeMultiple {
 	}
 
 	public boolean isInRange(int index) {
-		if (index >= 0 && index < this.daughters.length) {
+		if (index >= 0 && index < this.daughters.length && this.daughters[index] != null) {
 			return true;
 		}
 		return false;

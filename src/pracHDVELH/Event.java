@@ -5,7 +5,6 @@
  */
 package pracHDVELH;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 import myUtils.ErrorNaiveHandler;
@@ -20,11 +19,10 @@ public class Event extends NodeMultiple {
 	public static final String WARNING_MSG_INTEGER_EXPECTED = "Please input a integer within range!";
 
 	protected GUIManager gui;
-	protected int playerAnswer;
 	protected int id;
 	protected Event[] daughters;
-	protected String data;
 	protected int pathAnswer;
+	protected String playerAnswer;
 
 	static int lastId = 0;
 
@@ -45,18 +43,30 @@ public class Event extends NodeMultiple {
 	/**
 	 * @return the playerAnswer
 	 */
-	public int getPlayerAnswer() {
-		int playerAnswerV;
-		while(true) {
-			playerAnswerV = this.getReader().nextInt();
-			if (!this.isInRange(playerAnswerV-1)) {
-				this.gui.output(WARNING_MSG_INTEGER_EXPECTED);
-				continue;
-			}
-			break;
-		}
+	public String getPlayerAnswer() {
+		String playerAnswerV;
+		playerAnswerV = this.getReader().next();
+
 		this.playerAnswer = playerAnswerV;
-		return this.interpretAnswer();
+
+		return this.playerAnswer;
+	}
+
+
+	public int interpretAnswer() {
+		int playerAnswerInt;
+		this.gui.outputln(this.PROMPT_ANSWER);
+		while(true) {
+			playerAnswerInt = Integer.parseInt(this.getPlayerAnswer());
+			if (this.isInRange(playerAnswerInt-1)) {
+				break;
+			}
+			this.gui.output(WARNING_MSG_INTEGER_EXPECTED);
+			this.gui.outputln(this.PROMPT_ANSWER);
+		}
+
+		this.pathAnswer = playerAnswerInt-1;
+		return this.pathAnswer;
 	}
 
 
@@ -83,20 +93,10 @@ public class Event extends NodeMultiple {
 	}
 
 
-	public int interpretAnswer() {
-		if (this.daughters[this.playerAnswer-1] ==  null) {
-			this.gui.outputErr(ERROR_MSG_UNEXPECTED_END);
-		}
-
-		this.pathAnswer = this.playerAnswer-1;
-		return this.pathAnswer;
-	}
-
-
 	/**
 	 * @param playerAnswer the playerAnswer to set
 	 */
-	public void setPlayerAnswer(int playerAnswer) {
+	public void setPlayerAnswer(String playerAnswer) {
 		this.playerAnswer = playerAnswer;
 	}
 
@@ -133,7 +133,7 @@ public class Event extends NodeMultiple {
 	 * @see pracHDVELH.NodeMultiple#getData()
 	 */
 	public String getData() {
-		return this.data;
+		return this.data.toString();
 	}
 
 	/**
@@ -207,10 +207,8 @@ public class Event extends NodeMultiple {
 
 	public Event run() {
 		this.gui.outputln(this.getData());
-		this.gui.outputln(this.PROMPT_ANSWER);
 
-		// on récupère le choix
-		int userChoice = this.getPlayerAnswer();
+		int userChoice = this.interpretAnswer();
 
 		return this.getDaughter(userChoice);
 	}

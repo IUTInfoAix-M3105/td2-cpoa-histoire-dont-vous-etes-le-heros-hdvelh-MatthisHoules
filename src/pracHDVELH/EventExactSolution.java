@@ -13,6 +13,10 @@ public class EventExactSolution extends Event {
 
     @Override
     public int interpretAnswer() {
-        return super.interpretAnswer();
+        boolean isStart = this.exactSolution.startsWith(this.getPlayerAnswer());
+        if (isStart) {
+            return 0;
+        }
+        return 1;
     }
 }

@@ -35,6 +35,7 @@ public class Scenario {
 		Event currentEvent = this.getHead();
 		while(!currentEvent.isFinal()) currentEvent = currentEvent.run();
 
+		this.gui.outputln(currentEvent.getData());
 		return this.MSG_FINALE;
 	}
 
@@ -67,7 +68,6 @@ public class Scenario {
 		event2.addDaughter(event1);
 		event2.addDaughter(startEvent);
 		scenario = new Scenario(gui, startEvent);
-		scenario.gui.outputln(scenario.run());
 
 		// *2
 		// ...
@@ -77,10 +77,11 @@ public class Scenario {
 
 		Event event3 = new EventExactSolution(gui, "Wizard: how much is worth pi?", "3.14159");
 
-		/*event2.setData(event2.getData() + " (3)2.3");
+		event2.setData(event2.getData() + " (3)2.3");
 		event2.addDaughter(event3);
 		event3.addDaughter(endEvent);
-		event3.addDaughter(event3); */
+		event3.addDaughter(event3);
+		scenario.gui.outputln(scenario.run());
 
 		/* ******* */
 		// **2.3
